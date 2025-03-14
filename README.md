@@ -1,7 +1,6 @@
-# BEM-GardenControl
+# GardenControl
 
-> GardenControl is intelligent watering system to control sprinklers, pumps and sensors
-
+> The GardenControl is an intelligent watering system to control sprinklers, pumps and sensors. 
 
 + 12x outputs for valve control (24VAC)
 + 2x outputs for external 230V relais (e.g. for 230V pumps)
@@ -9,8 +8,7 @@
 + 4x ADC inputs 0-12V (e.g. for Humidity, pressure, temperature, ..., -sensors)
 + 3x Binär-inputs (e.g. for switches, S0-Interface, Rainssensor, ...)
 
-## HW-Variants
 
-### KNX
 
-### ESP32
+
+## 
