@@ -1,0 +1,602 @@
+esphome:
+  name: esp32-gardencontrol
+  friendly_name: ESP32 GardenControl
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  reboot_timeout: 0s
+  encryption:
+    key: "yeEOrYfHwMGuX0kWfSADb/PSPXcE7K4JRN/OcXgJGY0="
+
+ota:
+  - platform: esphome
+    password: "8f2367541da378ad86b985949228afb6"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32-Gardencontrol"
+    password: "yrjlyOUu4IDJ"
+
+captive_portal:
+
+mqtt:
+  broker: !secret mqtt_ip
+  username: !secret mqtt_user 
+  password: !secret mqtt_password  
+
+i2c:
+  sda: GPIO21 
+  scl: GPIO22
+  scan: true
+  id: bus_a
+
+mcp23017:
+  - id: 'mcp23017_top'
+    i2c_id: bus_a
+    address: 0x26
+  - id: 'mcp23017_bot'
+    address: 0x27
+    i2c_id: bus_a
+
+pcf8574:
+  - id: 'pcf8575'
+    address: 0x24
+    pcf8575: True
+
+ads1115:
+  - address: 0x49
+
+# Individual outputs
+switch:
+  - platform: gpio
+    pin: GPIO12
+    name: "GardenControl Status LED"
+  - platform: gpio
+    pin: GPIO2
+    name: "GardenControl ERROR LED"    
+
+  - platform: gpio
+    name: "GardenControl 5V enable"
+    restore_mode: ALWAYS_ON
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 3
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    name: "GardenControl 12V enable"
+    restore_mode: ALWAYS_ON
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 4
+      mode:
+        output: true
+      inverted: false      
+  - platform: gpio
+    name: "GardenControl 24V enable"
+    restore_mode: ALWAYS_ON
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 5
+      mode:
+        output: true
+      inverted: false  
+  - platform: gpio
+    name: "GardenControl 24V 4-20mA CH1 enable"
+    restore_mode: ALWAYS_ON
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 14
+      mode:
+        output: true
+      inverted: false
+  - platform: gpio
+    name: "GardenControl 24V 4-20mA CH2 enable"
+    restore_mode: ALWAYS_ON
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 15
+      mode:
+        output: true
+      inverted: false
+
+  - platform: gpio
+    name: "GardenControl Ventil_1"
+    id: gardencontrol_sw_ventil_1
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 0
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_1 
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_1 
+  - platform: gpio
+    name: "GardenControl Ventil_2"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 1
+      mode:
+        output: true
+      inverted: false  
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_2
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_2
+  - platform: gpio
+    name: "GardenControl Ventil_3"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 2
+      mode:
+        output: true
+      inverted: false      
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_3
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_3
+  - platform: gpio
+    name: "GardenControl Ventil_4"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 3
+      mode:
+        output: true
+      inverted: false 
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_4
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_4
+  - platform: gpio
+    name: "GardenControl Ventil_5"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 4
+      mode:
+        output: true
+      inverted: false       
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_5
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_5
+  - platform: gpio
+    name: "GardenControl Ventil_6"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 5
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_6
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_6
+  - platform: gpio
+    name: "GardenControl Ventil_7"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 6
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_7
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_7
+  - platform: gpio
+    name: "GardenControl Ventil_8"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 7
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_8
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_8
+  - platform: gpio
+    name: "GardenControl Ventil_9"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 8
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_9
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_9
+  - platform: gpio
+    name: "GardenControl Ventil_10"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 9
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_10
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_10
+  - platform: gpio
+    name: "GardenControl Ventil_11"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 10
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_11
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_11
+  - platform: gpio
+    name: "GardenControl Ventil_12"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 11
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_ventil_12
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_ventil_12
+
+  - platform: gpio
+    name: "GardenControl Relais_1"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 12
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_relais_1
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_relais_1
+  - platform: gpio
+    name: "GardenControl Relais_2"
+    restore_mode: ALWAYS_OFF
+    pin:
+      mcp23xxx: mcp23017_bot
+      number: 13
+      mode:
+        output: true
+      inverted: false
+    on_turn_on: 
+      - switch.turn_on: gardencontrol_led_relais_2
+    on_turn_off: 
+      - switch.turn_off: gardencontrol_led_relais_2
+
+  - platform: gpio
+    name: "GardenControl Ventil_1 LED"
+    id: gardencontrol_led_ventil_1
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 15
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_2 LED"
+    id: gardencontrol_led_ventil_2
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 14
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_3 LED"
+    id: gardencontrol_led_ventil_3
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 13
+      mode:
+        output: true
+      inverted: true      
+  - platform: gpio
+    name: "GardenControl Ventil_4 LED"
+    id: gardencontrol_led_ventil_4
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 12
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_5 LED"
+    id: gardencontrol_led_ventil_5
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 11
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_6 LED"
+    id: gardencontrol_led_ventil_6
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 10
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_7 LED"
+    id: gardencontrol_led_ventil_7
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 9
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_8 LED"
+    id: gardencontrol_led_ventil_8
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 8
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_9 LED"
+    id: gardencontrol_led_ventil_9
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 7
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_10 LED"
+    id: gardencontrol_led_ventil_10
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 6
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Ventil_11 LED"
+    id: gardencontrol_led_ventil_11
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 5
+      mode:
+        output: true
+      inverted: true      
+  - platform: gpio
+    name: "GardenControl Ventil_12 LED"
+    id: gardencontrol_led_ventil_12
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 4
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Relais_1 LED"
+    id: gardencontrol_led_relais_1
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 3
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl Relais_2 LED"
+    id: gardencontrol_led_relais_2
+    internal: True
+    pin:
+      pcf8574: pcf8575
+      number: 2
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl MQTT LED"
+    pin:
+      pcf8574: pcf8575
+      number: 1
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "GardenControl 24VAC LED"
+    pin:
+      pcf8574: pcf8575
+      number: 0
+      mode:
+        output: true
+      inverted: true
+ 
+
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO14
+      inverted: true
+    name: "GardenControl BIN-Input_1"
+    filters:
+      - delayed_on: 10ms
+
+  - platform: gpio
+    pin:
+      number: GPIO16
+      inverted: true
+    name: "GardenControl BIN-Input_2"
+    filters:
+      - delayed_on: 10ms
+
+  - platform: gpio
+    pin:
+      number: GPIO17
+      inverted: true
+    name: "GardenControl BIN-Input_3" 
+    filters:
+      - delayed_on: 10ms
+
+  - platform: gpio
+    name: "GardenControl HW-ID1"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 0
+      mode:
+        input: true
+        pullup: true
+      inverted: false  
+  - platform: gpio
+    name: "GardenControl HW-ID2"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 1
+      mode:
+        input: true
+        pullup: true
+      inverted: false  
+  - platform: gpio
+    name: "GardenControl HW-ID3"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 2
+      mode:
+        input: true
+        pullup: true
+      inverted: false      
+  - platform: gpio
+    name: "GardenControl 12V ERROR"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 8
+      mode:
+        input: true
+        pullup: false
+      inverted: true        
+  - platform: gpio
+    name: "GardenControl 24V ERROR"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 9
+      mode:
+        input: true
+        pullup: false
+      inverted: true 
+  - platform: gpio
+    name: "GardenControl 5V ERROR"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 10
+      mode:
+        input: true
+        pullup: false
+      inverted: true         
+  - platform: gpio
+    name: "GardenControl 12V & 24V ERROR"
+    pin:
+      mcp23xxx: mcp23017_top
+      number: 11
+      mode:
+        input: true
+        pullup: false
+      inverted: true 
+
+
+
+sensor:
+  - platform: adc
+    pin: GPIO32
+    name: "GardenControl ADC_1"
+    state_class: "measurement"
+    update_interval: 10s  
+  - platform: adc
+    pin: GPIO33
+    name: "GardenControl ADC_2"
+    state_class: "measurement"
+    update_interval: 10s  
+  - platform: adc
+    pin: GPIO34
+    name: "GardenControl ADC_3"
+    state_class: "measurement"
+    update_interval: 10s  
+  - platform: adc
+    pin: GPIO35
+    name: "GardenControl ADC_4"
+    state_class: "measurement"
+    update_interval: 10s         
+
+  - platform: ads1115
+    multiplexer: 'A1_GND'
+    gain: 2.048
+    name: "GardenControl 4-20mA CH1"
+    update_interval: 10s  
+    unit_of_measurement: "mA"
+    device_class: current
+    state_class: "measurement"
+    filters:
+      multiply: 10
+  - platform: ads1115
+    multiplexer: 'A0_GND'
+    gain: 2.048
+    name: "GardenControl 4-20mA CH2"
+    update_interval: 10s  
+    unit_of_measurement: "mA"
+    device_class: current
+    state_class: "measurement"
+    filters:
+      multiply: 10
+  - platform: ads1115
+    multiplexer: 'A2_GND'
+    gain: 2.048
+    name: "GardenControl 4-20mA CH1 ERROR"
+    update_interval: 10s  
+  - platform: ads1115
+    multiplexer: 'A3_GND'
+    gain: 2.048
+    name: "GardenControl 4-20mA CH2 ERROR"   
+    update_interval: 10s           
