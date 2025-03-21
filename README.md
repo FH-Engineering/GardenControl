@@ -31,6 +31,12 @@
 ### So-Inputs (not in all Firmware types available) 
 ![AnschlussS0](doc/picture/AnschlussS0.PNG)
 
+## Firmware 
+
+Firmware | Description | Link
+-------- | -------- | --------
+ESPHome  | Inhalt   | [link ESPhome Yaml](esp32-gardencontrol.yaml)
+Tasmota   | Inhalt   | Inhalt
 
 ## Hardware Block-Diagram
 ![Block-Diagramm](doc/picture/GardenControl_Block_Diagram.png)
