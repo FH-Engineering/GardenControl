@@ -9,6 +9,7 @@
 + 3x Binär-inputs (e.g. for switches, S0-Interface, Rainssensor, ...)
 
 
+<kbd>![Block-Diagramm](doc/picture/GardenControl_Block_Diagram)</kbd>
 
 
 ## 
