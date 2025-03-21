@@ -8,8 +8,7 @@
 + 4x ADC inputs 0-12V (e.g. for Humidity, pressure, temperature, ..., -sensors)
 + 3x Binär-inputs (e.g. for switches, S0-Interface, Rainssensor, ...)
 
+## Hardware Block-Diagram
+![Block-Diagramm](doc/picture/GardenControl_Block_Diagram.png)
 
-<kbd>![Block-Diagramm](doc/picture/GardenControl_Block_Diagram)</kbd>
 
-
-## 
