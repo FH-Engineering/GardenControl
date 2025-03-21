@@ -11,9 +11,19 @@
 ## Connection Diagram
 
 ### 24V AC Connection
+
+The GardenControl need a 24VAC Transformer. This Transfomer provide the power for the valves/relays and for all other funktions. No additional PWR-Supply necessary.
+
+NOTE: you have to protect the system always with an external 3A FUSE. In case the transformer has a integrated Fuse (<=3A) it is also fine.  
+
 ![AnschlussPWR](doc/picture/AnschlussPWR.PNG)
 
 ### Valves Connections
+
+You can connect up to 12 valves.
+
+NOTE: ensure that the total current consumption of all parallel open valves is always < 3A
+
 ![AnschlussVentile](doc/picture/AnschlussVentile.PNG)
 
 ### Relay Connections
