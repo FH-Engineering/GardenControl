@@ -35,8 +35,8 @@
 
 Firmware | Description | Link
 -------- | -------- | --------
-ESPHome  | Inhalt   | [link ESPhome Yaml](esp32-gardencontrol.yaml)
-Tasmota   | Inhalt   | Inhalt
+ESPHome  | Inhalt   | [link ESPhome Yaml](ESPHome_Firmware/esp32-gardencontrol.yaml)
+Tasmota   | Inhalt   | [link Tasmota_Firmware](https://gitlab.com/noschFRQ/esp32-gardencontrol)
 
 ## Hardware Block-Diagram
 ![Block-Diagramm](doc/picture/GardenControl_Block_Diagram.png)
