@@ -41,4 +41,6 @@ Tasmota   | Inhalt   | [link Tasmota_Firmware](https://gitlab.com/noschFRQ/esp32
 ## Hardware Block-Diagram
 ![Block-Diagramm](doc/picture/GardenControl_Block_Diagram.png)
 
-
+## Hardware PCB Overview
+![PCB_TOP](doc/picture/GardenControl_PCB_TOP.png)
+![PCB_BOT](doc/picture/GardenControl_PCB_BOT.png)
