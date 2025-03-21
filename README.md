@@ -51,7 +51,11 @@ For sensor power supplys the system can provide +5V, 12V, +24V output volatges. 
 
 ![AnschlussADC](doc/picture/AnschlussADC.PNG)
 
-### So-Inputs (not in all Firmware types available) 
+### S0-Inputs (not in all Firmware types available) 
+
+The three Binary Inputs can also be used to read in energy, gas, water-merters. <br>
+NOTE: Please check before, if the firmware can handle this! 
+
 ![AnschlussS0](doc/picture/AnschlussS0.PNG)
 
 ## Firmware 
