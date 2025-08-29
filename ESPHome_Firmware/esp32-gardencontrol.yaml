@@ -2,6 +2,14 @@ esphome:
   name: esp32-gardencontrol
   friendly_name: ESP32 GardenControl
 
+
+  on_boot:
+    priority: -100
+    then:
+      - switch.turn_on: gardencontrolPWRLed
+
+
+
 esp32:
   board: esp32dev
   framework:
@@ -15,6 +23,16 @@ api:
   reboot_timeout: 0s
   encryption:
     key: "yeEOrYfHwMGuX0kWfSADb/PSPXcE7K4JRN/OcXgJGY0="
+
+
+  services:
+    - service: set_pulse_total
+      variables:
+        new_pulse_total: int
+      then:
+        - pulse_counter.set_total_pulses:
+            id: pulse_counter_id
+            value: !lambda 'return new_pulse_total;'
 
 ota:
   - platform: esphome
@@ -64,6 +82,7 @@ switch:
     pin: GPIO12
     name: "GardenControl Status LED"
   - platform: gpio
+    id: gardenControlErrorLed
     pin: GPIO2
     name: "GardenControl ERROR LED"    
 
@@ -440,6 +459,7 @@ switch:
       inverted: true
   - platform: gpio
     name: "GardenControl MQTT LED"
+    id: gardencontrol_mqtt_led
     pin:
       pcf8574: pcf8575
       number: 1
@@ -448,6 +468,7 @@ switch:
       inverted: true
   - platform: gpio
     name: "GardenControl 24VAC LED"
+    id: gardencontrolPWRLed
     pin:
       pcf8574: pcf8575
       number: 0
@@ -475,15 +496,8 @@ binary_sensor:
       - delayed_on: 10ms
 
   - platform: gpio
-    pin:
-      number: GPIO17
-      inverted: true
-    name: "GardenControl BIN-Input_3" 
-    filters:
-      - delayed_on: 10ms
-
-  - platform: gpio
     name: "GardenControl HW-ID1"
+    id: gardenControl_HWID1
     pin:
       mcp23xxx: mcp23017_top
       number: 0
@@ -493,6 +507,7 @@ binary_sensor:
       inverted: false  
   - platform: gpio
     name: "GardenControl HW-ID2"
+    id: gardenControl_HWID2
     pin:
       mcp23xxx: mcp23017_top
       number: 1
@@ -502,6 +517,7 @@ binary_sensor:
       inverted: false  
   - platform: gpio
     name: "GardenControl HW-ID3"
+    id: gardenControl_HWID3
     pin:
       mcp23xxx: mcp23017_top
       number: 2
@@ -511,24 +527,26 @@ binary_sensor:
       inverted: false      
   - platform: gpio
     name: "GardenControl 12V ERROR"
+    id: error12V
     pin:
       mcp23xxx: mcp23017_top
       number: 8
       mode:
         input: true
-        pullup: false
-      inverted: true        
+      inverted: false        
   - platform: gpio
     name: "GardenControl 24V ERROR"
+    id: error24V
     pin:
       mcp23xxx: mcp23017_top
       number: 9
       mode:
         input: true
         pullup: false
-      inverted: true 
+      inverted: false 
   - platform: gpio
     name: "GardenControl 5V ERROR"
+    id: error5V
     pin:
       mcp23xxx: mcp23017_top
       number: 10
@@ -536,67 +554,151 @@ binary_sensor:
         input: true
         pullup: false
       inverted: true         
-  - platform: gpio
-    name: "GardenControl 12V & 24V ERROR"
-    pin:
-      mcp23xxx: mcp23017_top
-      number: 11
-      mode:
-        input: true
-        pullup: false
-      inverted: true 
-
-
 
 sensor:
   - platform: adc
     pin: GPIO32
     name: "GardenControl ADC_1"
     state_class: "measurement"
-    update_interval: 10s  
+    accuracy_decimals: 2
+    update_interval: 2s  
+    attenuation: 11db   # max. Messbereich ca. 3.3V
+    filters:
+      multiply: 4
   - platform: adc
     pin: GPIO33
     name: "GardenControl ADC_2"
     state_class: "measurement"
-    update_interval: 10s  
+    accuracy_decimals: 2
+    update_interval: 2s  
+    attenuation: 11db   # max. Messbereich ca. 3.3V
+    filters:
+      multiply: 4
   - platform: adc
     pin: GPIO34
     name: "GardenControl ADC_3"
     state_class: "measurement"
-    update_interval: 10s  
+    accuracy_decimals: 2
+    update_interval: 2s  
+    attenuation: 11db   # max. Messbereich ca. 3.3V
+    filters:
+      multiply: 4
   - platform: adc
     pin: GPIO35
     name: "GardenControl ADC_4"
     state_class: "measurement"
-    update_interval: 10s         
+    accuracy_decimals: 2
+    update_interval: 2s    
+    attenuation: 11db   # max. Messbereich ca. 3.3V
+    filters:
+      multiply: 4    
+  - platform: adc
+    pin: GPIO39
+    id: gardendontrol_HW_ID_TOP_vlaue
+    name: "GardenControl HW-ID Value"
+    state_class: "measurement"
+    accuracy_decimals: 2
+    attenuation: 11db   # max. Messbereich ca. 3.3V
+    filters:
+      multiply: 1.0
+     
 
   - platform: ads1115
     multiplexer: 'A1_GND'
     gain: 2.048
     name: "GardenControl 4-20mA CH1"
-    update_interval: 10s  
+    update_interval: 3s  
     unit_of_measurement: "mA"
     device_class: current
     state_class: "measurement"
+    accuracy_decimals: 1
     filters:
       multiply: 10
   - platform: ads1115
     multiplexer: 'A0_GND'
     gain: 2.048
     name: "GardenControl 4-20mA CH2"
-    update_interval: 10s  
+    update_interval: 3s  
     unit_of_measurement: "mA"
     device_class: current
     state_class: "measurement"
+    accuracy_decimals: 1
     filters:
       multiply: 10
   - platform: ads1115
     multiplexer: 'A2_GND'
     gain: 2.048
     name: "GardenControl 4-20mA CH1 ERROR"
-    update_interval: 10s  
+    id: gardencontrol_ch1_4_20ma_adc_value
+    unit_of_measurement: "V"
+    update_interval: 3s  
   - platform: ads1115
     multiplexer: 'A3_GND'
     gain: 2.048
     name: "GardenControl 4-20mA CH2 ERROR"   
-    update_interval: 10s           
+    id: gardencontrol_ch2_4_20ma_adc_value
+    unit_of_measurement: "V"
+    update_interval: 3s  
+
+  - platform: template
+    name: "GardenControl BOT HW-ID" 
+    lambda: |- 
+      if(id(gardenControl_HWID2).state == 0 && id(gardenControl_HWID2).state == 0 && id(gardenControl_HWID3).state == 1)
+      {
+        return 5.0;
+      } else {
+        return 0.0;
+      }
+    update_interval: 1.31s   
+
+  - platform: template
+    name: "GardenControl TOP HW-ID" 
+    lambda: |- 
+      float val;
+      ESP_LOGD("gardencontrol", "ADC:%f", id(gardendontrol_HW_ID_TOP_vlaue).state);
+      if(id(gardendontrol_HW_ID_TOP_vlaue).state > 3.1 )
+      {
+        val = 0.3;
+      } else {
+        val = 0.0;
+      }
+      /* auf eine Nachkommastelle runden */
+      return round(val * 10.0) / 10.0;
+    update_interval: 1.43s     
+
+  # S0 counter 
+  - platform: pulse_counter
+    pin: GPIO17
+    id: pulse_counter_id
+    unit_of_measurement: 'kW'
+    name: 'GardenControl Power Meter House'
+    filters:
+      - multiply: 0.06  # (60s/1000 pulses per kWh)
+
+    total:
+      unit_of_measurement: 'kWh'
+      name: 'GardenControl Energy Meter House'
+      filters:
+        - multiply: 0.001  # (1/1000 pulses per kWh)
+
+interval:
+  - interval: 1s
+    then:
+      - lambda: |-
+          if (id(error5V).state || id(error12V).state > 0 || id(error24V).state > 0 || id(gardencontrol_ch1_4_20ma_adc_value).state > 2 || id(gardencontrol_ch2_4_20ma_adc_value).state > 2) {
+            id(gardenControlErrorLed).turn_on();
+          } else {
+            id(gardenControlErrorLed).turn_off();
+          }
+
+  - interval: 1.1s
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - logger.log: MQTT is connected!
+          - switch.turn_on: gardencontrol_mqtt_led
+        else:
+          - switch.turn_off: gardencontrol_mqtt_led
+
