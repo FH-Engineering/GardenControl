@@ -45,7 +45,7 @@ wifi:
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Esp32-Gardencontrol"
-    password: "yrjlyOUu4IDJ"
+    password: "12345678"
 
 captive_portal:
 
