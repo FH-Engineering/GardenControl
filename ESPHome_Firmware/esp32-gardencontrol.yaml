@@ -22,7 +22,7 @@ logger:
 api:
   reboot_timeout: 0s
   encryption:
-    #key: "yeEOrYfHwMGuX0kWfSADb/PSPXcE7K4JRN/OcXgJGY0="
+    key: "yeEOrYfHwMGuX0kWfSADb/PSPXcE7K4JRN/OcXgJGY0="
 
 
   services:
