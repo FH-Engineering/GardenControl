@@ -1,5 +1,5 @@
 esphome:
-  name: esp32-gardencontrol
+  name: gardencontrol-esp
   friendly_name: ESP32 GardenControl
 
 
@@ -7,7 +7,6 @@ esphome:
     priority: -100
     then:
       - switch.turn_on: gardencontrolPWRLed
-
 
 
 esp32:
@@ -20,9 +19,9 @@ logger:
 
 # Enable Home Assistant API
 api:
-  reboot_timeout: 0s
+  reboot_timeout: 15min
   encryption:
-    key: "yeEOrYfHwMGuX0kWfSADb/PSPXcE7K4JRN/OcXgJGY0="
+    key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # link to get a key: https://esphome.io/components/api/#configuration-variables
 
 
   services:
@@ -34,25 +33,32 @@ api:
             id: pulse_counter_id
             value: !lambda 'return new_pulse_total;'
 
+web_server:
+  port: 80
+
 ota:
-  - platform: esphome
-    password: "8f2367541da378ad86b985949228afb6"
+  - platform: web_server
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ssid: "wifi_name"             # SSID Name of your Wifi
+  password: "wifi_password"     # Passwort of this Wifi
+
+  on_connect:
+    - switch.turn_on: gardenControlStatusLed
+  on_disconnect:
+    - switch.turn_off: gardenControlStatusLed
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Esp32-Gardencontrol"
-    password: "yrjlyOUu4IDJ"
 
 captive_portal:
 
-mqtt:
-  broker: !secret mqtt_ip
-  username: !secret mqtt_user 
-  password: !secret mqtt_password  
+# only acticate in case you need it. For the communication with HA it is not needed. 
+#mqtt:
+#  broker: "192.168.xxx.xxx"   # The IP of the MQTT Broker
+#  username: "user-name"       # The name of the MQTT user
+#  password: "password"        # The MQTT-user Passwort
 
 i2c:
   sda: GPIO21 
@@ -79,12 +85,15 @@ ads1115:
 # Individual outputs
 switch:
   - platform: gpio
+    id: gardenControlStatusLed
     pin: GPIO12
     name: "GardenControl Status LED"
+    internal: True 
   - platform: gpio
     id: gardenControlErrorLed
     pin: GPIO2
-    name: "GardenControl ERROR LED"    
+    name: "GardenControl ERROR LED"
+    internal: True      
 
   - platform: gpio
     name: "GardenControl 5V enable"
@@ -460,6 +469,7 @@ switch:
   - platform: gpio
     name: "GardenControl MQTT LED"
     id: gardencontrol_mqtt_led
+    internal: True 
     pin:
       pcf8574: pcf8575
       number: 1
@@ -469,6 +479,7 @@ switch:
   - platform: gpio
     name: "GardenControl 24VAC LED"
     id: gardencontrolPWRLed
+    internal: True 
     pin:
       pcf8574: pcf8575
       number: 0
